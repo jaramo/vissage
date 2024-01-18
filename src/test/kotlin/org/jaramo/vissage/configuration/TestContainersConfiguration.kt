@@ -1,4 +1,4 @@
-package org.jaramo.vissage
+package org.jaramo.vissage.configuration
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
