@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: "Visable Message"
+  jackson:
+    time-zone: Europe/Berlin
+    serialization:
+      write-dates-as-timestamps: false
+  datasource:
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/messaging
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+  liquibase:
+    enabled: true
+
+logging.level:
+  org.springframework:
+    data: INFO
+    jdbc.core.JdbcTemplate: DEBUG
+
