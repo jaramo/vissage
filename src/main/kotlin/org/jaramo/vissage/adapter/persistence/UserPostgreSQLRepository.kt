@@ -24,7 +24,12 @@ class UserPostgreSQLRepository(
 
     override fun createUser(nickname: Nickname): Result<User> =
         repository.runCatching {
-            this.save(EntityUser(nickname.value()))
+            this.save(
+                EntityUser(
+                    nickname = nickname.value(),
+                    createdAt = LocalDateTime.now()
+                )
+            )
         }.mapCatching {
             it.toModel()
         }
@@ -46,10 +51,6 @@ data class EntityUser(
     val nickname: String,
     val createdAt: LocalDateTime,
 ) : Persistable<UUID> {
-
-    constructor(nickname: String) :
-            this(nickname = nickname, createdAt = LocalDateTime.now())
-
     override fun getId(): UUID? = id
     override fun isNew(): Boolean = id == null
 }
