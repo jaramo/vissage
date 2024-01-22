@@ -58,4 +58,14 @@ class MessageService(
                 cause = it
             )
         }
+
+    fun getReceivedMessages(receiver: User, senderId: UUID): Result<List<Message>> =
+        runCatching {
+            messageRepository.getReceived(from = senderId, to = receiver.id)
+        }.recoverCatching {
+            throw ExceptionError(
+                whenever = "fetching messages sent by User[${senderId}] to User[${receiver.id}]",
+                cause = it
+            )
+        }
 }

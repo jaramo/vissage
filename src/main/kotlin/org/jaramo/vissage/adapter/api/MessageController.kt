@@ -52,8 +52,15 @@ class MessageController(
     }
 
     @GetMapping("/received", params = ["from"])
-    fun receivedFromUser(user: User, @RequestParam("from") from: UUID) {
-        TODO()
+    fun receivedFromUser(user: User, @RequestParam("from") from: UUID): ResponseEntity<out Any> {
+        return messageService
+            .getReceivedMessages(receiver = user, senderId = from).map { messages ->
+                ResponseEntity.ok(
+                    messages.map { it.toDto() }
+                )
+            }.getOrElse {
+                it.toResponse()
+            }
     }
 }
 

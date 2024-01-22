@@ -24,6 +24,12 @@ class MessageRepositoryStub : MessageRepository, ClearableStub {
         }
     }
 
+    override fun getReceived(from: UUID, to: UUID): List<Message> {
+        return storage.filter {
+            it.to.id == to && it.from.id == from
+        }
+    }
+
     override fun getSentBy(userId: UUID): List<Message> {
         return storage.filter {
             it.from.id == userId

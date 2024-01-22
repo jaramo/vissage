@@ -124,6 +124,68 @@ class MessageControllerTest @Autowired constructor(
     }
 
     @Nested
+    inner class MessagesReceivedByUserFromParticularUser {
+
+        @BeforeEach
+        fun setUp() {
+            userRepository.save(Alice)
+            userRepository.save(Bob)
+            userRepository.save(Carol)
+        }
+
+        @Test
+        fun `should return 200 with empty list`() {
+            messageRepository.save(message(from = Alice, to = Bob, "Hi Bob!"))
+            messageRepository.save(message(from = Bob, to = Alice, "Hi Alice!"))
+
+            messageRepository.save(message(from = Alice, to = Carol, "Hi Carol!"))
+
+            mockMvc.get("/message/received") {
+                param("from", Carol.id.toString())
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$") {
+                        isArray()
+                        isEmpty()
+                    }
+                }
+            }
+        }
+
+        @Test
+        fun `should return a list with 2 messages`() {
+            messageRepository.save(message(from = Alice, to = Bob, "Hi Bob!"))
+            messageRepository.save(message(from = Bob, to = Alice, "Hi Alice!"))
+
+            messageRepository.save(message(from = Alice, to = Carol, "Hi Carol!"))
+            messageRepository.save(message(from = Carol, to = Alice, "Hi Alice!"))
+
+            mockMvc.get("/message/received") {
+                param("from", Bob.id.toString())
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$") {
+                        isArray()
+                        value(hasSize<Any>(1))
+                    }
+                    jsonPath("$[0].from.nickname") { value(Bob.nickname.value()) }
+                    jsonPath("$[0].to.nickname") { value(Alice.nickname.value()) }
+                }
+            }
+        }
+    }
+
+    @Nested
     inner class MessagesSentByUser {
 
         @BeforeEach
@@ -179,5 +241,38 @@ class MessageControllerTest @Autowired constructor(
             }
         }
     }
+
+    /*
+    @Nested
+    inner class SendMessageEntity {
+
+        @Test
+        fun `should return 400 when sending message to yourself`() {
+
+            val user = userRepository.save(User(id = UUID.randomUUID(), Nickname("test1"))).getOrThrow()
+
+            mockMvc.post("/message") {
+                headers {
+                    header(USER_ID_HEADER, user.id)
+                }
+                contentType = MediaType.APPLICATION_JSON
+                content = """|
+                    |{
+                    |   "to": "${user.id}",
+                    |   "message": "message to myself"
+                    |}
+                    |""".trimMargin()
+            }.andExpect {
+                status { isBadRequest() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.error") {
+                        value<Array<String>>(arrayWithSize(2))
+                    }
+                }
+            }
+        }
+    }
+    */
 
 }
