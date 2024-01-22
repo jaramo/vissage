@@ -24,9 +24,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.postgresql:postgresql'
 
@@ -36,6 +36,9 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:kafka'
 	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+	testImplementation 'io.kotest:kotest-assertions-core:5.8.0'
+	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.9.22'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.2.1'
 	testRuntimeOnly 'com.h2database:h2'
 }
