@@ -17,3 +17,4 @@ sealed class ApplicationError(val error: String, override val cause: Throwable? 
 }
 
 class UserNotFoundException(userId: UUID) : RuntimeException("User['$userId'] not found")
+class MissingUserIdHeaderException : RuntimeException("Missing 'X-user-id' header")
