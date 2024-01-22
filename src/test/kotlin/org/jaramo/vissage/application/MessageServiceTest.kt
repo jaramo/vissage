@@ -8,6 +8,7 @@ import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
+import org.jaramo.vissage.domain.service.MessageEventNotifier
 import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
 import org.junit.jupiter.api.BeforeEach
@@ -18,6 +19,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.stubbing
+import org.mockito.kotlin.verify
 import java.util.UUID
 
 internal class MessageServiceTest {
@@ -26,7 +28,8 @@ internal class MessageServiceTest {
 
         private val messageRepository: MessageRepository = mock()
         private val userRepository: UserRepository = mock()
-        private val service = MessageService(messageRepository, userRepository)
+        private val notifier: MessageEventNotifier = mock()
+        private val service = MessageService(messageRepository, userRepository, notifier)
 
         @BeforeEach
         fun setUp() {
@@ -38,6 +41,10 @@ internal class MessageServiceTest {
             val sender = User(UUID.randomUUID(), Nickname("Alice"))
             service.sendMessage(from = sender, to = sender.id, "Hi Bob!")
                 .shouldBeFailure<ReceiverNotValidError>()
+
+            verify(notifier) {
+                0 * { messageSent(any()) }
+            }
         }
 
         @Test
@@ -51,10 +58,14 @@ internal class MessageServiceTest {
 
             service.sendMessage(from = sender, to = receiver.id, "Hi Bob!")
                 .shouldBeFailure<UserNotFoundException>()
+
+            verify(notifier) {
+                0 * { messageSent(any()) }
+            }
         }
 
         @Test
-        fun `should persist message and return success`() {
+        fun `should persist message, publish event and return success`() {
             val sender = User(UUID.randomUUID(), Nickname("Alice"))
             val receiver = User(UUID.randomUUID(), Nickname("Bob"))
 
@@ -71,7 +82,11 @@ internal class MessageServiceTest {
             service.sendMessage(from = sender, to = receiver.id, "Hi Bob!").shouldBeSuccess { message ->
                 message.from shouldBe sender
                 message.to shouldBe receiver
+                verify(notifier) {
+                    1 * { messageSent(message) }
+                }
             }
+
         }
     }
 }

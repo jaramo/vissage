@@ -5,9 +5,11 @@ import org.jaramo.vissage.domain.model.ApplicationError.ReceiverNotValidError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
+import org.jaramo.vissage.domain.service.MessageEventNotifier
 import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.Result.Companion.failure
@@ -16,9 +18,10 @@ import kotlin.Result.Companion.failure
 class MessageService(
     private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
+    private val notifier: MessageEventNotifier,
 ) {
 
-    //    @Transactional
+    @Transactional
     fun sendMessage(from: User, to: UUID, content: String): Result<Message> {
         if (from.id == to)
             return failure(ReceiverNotValidError(sender = from.id, receiver = to))
@@ -36,6 +39,8 @@ class MessageService(
 
                 messageRepository.save(message)
             }
+        }.onSuccess { message ->
+            notifier.messageSent(message)
         }
     }
 

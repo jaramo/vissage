@@ -1,73 +1,74 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id 'org.springframework.boot' version '3.2.1'
-	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.jetbrains.kotlin.jvm' version '1.9.21'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.21'
-	id 'com.adarshr.test-logger' version '4.0.0'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.21'
+    id 'com.adarshr.test-logger' version '4.0.0'
 }
 
 group = 'org.jaramo'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.kafka:spring-kafka'
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	implementation 'org.liquibase:liquibase-core'
-	implementation 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.postgresql:postgresql'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-	testImplementation 'org.springframework.kafka:spring-kafka-test'
-	testImplementation 'org.testcontainers:junit-jupiter'
-	testImplementation 'org.testcontainers:kafka'
-	testImplementation 'org.testcontainers:postgresql'
-	testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
-	testImplementation 'io.kotest:kotest-assertions-core:5.8.0'
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.9.22'
-	testImplementation 'com.tngtech.archunit:archunit-junit5:1.2.1'
-	testRuntimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:rabbitmq'
+
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+    testImplementation 'io.kotest:kotest-assertions-core:5.8.0'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.9.22'
+    testImplementation 'com.tngtech.archunit:archunit-junit5:1.2.1'
+    testRuntimeOnly 'com.h2database:h2'
 }
 
 tasks.withType(KotlinCompile) {
-	kotlinOptions {
-		freeCompilerArgs += '-Xjsr305=strict'
-		jvmTarget = '17'
-	}
+    kotlinOptions {
+        freeCompilerArgs += '-Xjsr305=strict'
+        jvmTarget = '17'
+    }
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 
-	testLogging {
-		info.events = []
-		info.showStandardStreams false
-	}
+    testLogging {
+        info.events = []
+        info.showStandardStreams false
+    }
 }
 
 testlogger {
-	theme = 'mocha'
-	slowThreshold = 500
-	showFullStackTraces = true
+    theme = 'mocha'
+    slowThreshold = 500
+    showFullStackTraces = true
 
-	showStandardStreams = false
+    showStandardStreams = false
 
-	showPassed = true
-	showSkipped = true
-	showFailed = true
-	showOnlySlow = false
+    showPassed = true
+    showSkipped = true
+    showFailed = true
+    showOnlySlow = false
 }

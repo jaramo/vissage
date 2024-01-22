@@ -17,6 +17,11 @@ spring:
         show_sql: true
   liquibase:
     enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbit
+    password: rabbit
 
 logging.level:
   org.springframework:

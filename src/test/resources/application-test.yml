@@ -1,8 +1,6 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  session:
-    store-type: NONE
   jackson:
     serialization:
       indent_output: true
