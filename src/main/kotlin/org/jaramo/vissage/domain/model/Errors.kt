@@ -14,6 +14,9 @@ sealed class ApplicationError(val error: String, override val cause: Throwable? 
 
     data class MessagePersistError(val msg: Message, override val cause: Throwable) :
         ApplicationError("Unable to persist message $msg", cause)
+
+    data class ExceptionError(val whenever: String, override val cause: Throwable) :
+        ApplicationError("Error happened when $whenever: ${cause.stackTraceToString()}", cause)
 }
 
 class UserNotFoundException(userId: UUID) : RuntimeException("User['$userId'] not found")

@@ -66,7 +66,62 @@ class MessageControllerTest @Autowired constructor(
         }
     }
 
+    @Nested
+    inner class MessagesReceivedByUser {
 
+        @BeforeEach
+        fun setUp() {
+            userRepository.save(Alice)
+            userRepository.save(Bob)
+            userRepository.save(Carol)
+        }
+
+        @Test
+        fun `should return 200 with empty list`() {
+            mockMvc.get("/message/received") {
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$") {
+                        isArray()
+                        isEmpty()
+                    }
+                }
+            }
+        }
+
+        @Test
+        fun `should return a list with 2 messages`() {
+            messageRepository.save(message(from = Alice, to = Bob, "Hi Bob!"))
+            messageRepository.save(message(from = Bob, to = Alice, "Hi Alice!"))
+
+            messageRepository.save(message(from = Alice, to = Carol, "Hi Carol!"))
+            messageRepository.save(message(from = Carol, to = Alice, "Hi Alice!"))
+
+            mockMvc.get("/message/received") {
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$") {
+                        isArray()
+                        value(hasSize<Any>(2))
+                    }
+                    jsonPath("$[0].from.nickname") { value(Bob.nickname.value()) }
+                    jsonPath("$[0].to.nickname") { value(Alice.nickname.value()) }
+                    jsonPath("$[1].from.nickname") { value(Carol.nickname.value()) }
+                    jsonPath("$[1].to.nickname") { value(Alice.nickname.value()) }
+                }
+            }
+        }
+    }
 
     @Nested
     inner class MessagesSentByUser {
@@ -88,7 +143,7 @@ class MessageControllerTest @Autowired constructor(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content {
-                    jsonPath("$.messages") {
+                    jsonPath("$") {
                         isArray()
                         isEmpty()
                     }
@@ -99,7 +154,10 @@ class MessageControllerTest @Autowired constructor(
         @Test
         fun `should return a list with 2 messages`() {
             messageRepository.save(message(from = Alice, to = Bob, "Hi Bob!"))
+            messageRepository.save(message(from = Bob, to = Alice, "Hi Alice!"))
+
             messageRepository.save(message(from = Alice, to = Carol, "Hi Carol!"))
+            messageRepository.save(message(from = Carol, to = Alice, "Hi Alice!"))
 
             mockMvc.get("/message/sent") {
                 headers {
@@ -109,10 +167,14 @@ class MessageControllerTest @Autowired constructor(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content {
-                    jsonPath("$.messages") {
+                    jsonPath("$") {
                         isArray()
                         value(hasSize<Any>(2))
                     }
+                    jsonPath("$[0].from.nickname") { value(Alice.nickname.value()) }
+                    jsonPath("$[0].to.nickname") { value(Bob.nickname.value()) }
+                    jsonPath("$[1].from.nickname") { value(Alice.nickname.value()) }
+                    jsonPath("$[1].to.nickname") { value(Carol.nickname.value()) }
                 }
             }
         }

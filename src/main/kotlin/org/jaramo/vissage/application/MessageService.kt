@@ -1,5 +1,6 @@
 package org.jaramo.vissage.application
 
+import org.jaramo.vissage.domain.model.ApplicationError.ExceptionError
 import org.jaramo.vissage.domain.model.ApplicationError.ReceiverNotValidError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.model.User
@@ -10,9 +11,6 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.Result.Companion.failure
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 @Service
 class MessageService(
@@ -41,16 +39,23 @@ class MessageService(
         }
     }
 
-    fun getSentMessages(from: User): List<Message> = messageRepository.getSentBy(from.id)
-}
+    fun getReceivedMessages(receiver: User): Result<List<Message>> =
+        runCatching {
+            messageRepository.getReceivedBy(receiver.id)
+        }.recoverCatching {
+            throw ExceptionError(
+                whenever = "fetching messages received by User[${receiver.id}]",
+                cause = it
+            )
+        }
 
-@OptIn(ExperimentalContracts::class)
-public inline fun <R, T> Result<T>.flatMap(transform: (value: T) -> Result<R>): Result<R> {
-    contract {
-        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
-    }
-
-    return this.mapCatching {
-        transform(it).getOrThrow()
-    }
+    fun getSentMessages(sender: User): Result<List<Message>> =
+        runCatching {
+            messageRepository.getSentBy(sender.id)
+        }.recoverCatching {
+            throw ExceptionError(
+                whenever = "fetching messages sent by User[${sender.id}]",
+                cause = it
+            )
+        }
 }

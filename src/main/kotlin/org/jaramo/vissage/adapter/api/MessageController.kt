@@ -2,9 +2,11 @@ package org.jaramo.vissage.adapter.api
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import org.jaramo.vissage.adapter.api.dto.toDto
 import org.jaramo.vissage.application.MessageService
-import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
+import org.jaramo.vissage.infrastructure.toResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -26,17 +28,27 @@ class MessageController(
     }
 
     @GetMapping("/sent")
-    fun sent(user: User): ResponseEntity<SentMessagesDto> {
-        return messageService.getSentMessages(user).map {
-            MessageDto(id = it.id, from = user.nickname, to = it.to.nickname)
-        }.let {
-            ResponseEntity.ok(SentMessagesDto(user.nickname, it))
-        }
+    fun sent(user: User): ResponseEntity<out Any> {
+        return messageService
+            .getSentMessages(user).map { messages ->
+                ResponseEntity.ok(
+                    messages.map { it.toDto() }
+                )
+            }.getOrElse {
+                it.toResponse()
+            }
     }
 
     @GetMapping("/received")
-    fun received(user: User) {
-        TODO()
+    fun received(user: User): ResponseEntity<out Any> {
+        return messageService
+            .getReceivedMessages(user).map { messages ->
+                ResponseEntity.ok(
+                    messages.map { it.toDto() }
+                )
+            }.getOrElse {
+                it.toResponse()
+            }
     }
 
     @GetMapping("/received", params = ["from"])
@@ -49,11 +61,3 @@ data class SendMessageRequestDto(
     val to: UUID,
     @get:NotBlank val message: String,
 )
-
-data class SendMessageResponseDto(
-    val id: UUID,
-    val status: String,
-)
-
-data class SentMessagesDto(val from: Nickname, val messages: List<MessageDto>)
-data class MessageDto(val id: UUID, val from: Nickname, val to: Nickname)
