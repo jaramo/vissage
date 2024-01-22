@@ -2,9 +2,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS "user"
 (
-    id         uuid default uuid_generate_v4() primary key,
-    nickname   varchar unique not null,
-    created_at timestamp      not null
+    id         uuid      primary key,
+    nickname   varchar   not null unique,
+    created_at timestamp default current_timestamp
 );
 
 CREATE TABLE IF NOT EXISTS "message"

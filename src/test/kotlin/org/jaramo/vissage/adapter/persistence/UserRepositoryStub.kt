@@ -9,8 +9,7 @@ import java.util.UUID
 class UserRepositoryStub : UserRepository, ClearableStub {
 
     private val users = mutableSetOf<User>()
-    override fun createUser(nickname: Nickname): Result<User> {
-        val user = User(UUID.randomUUID(), nickname)
+    override fun save(user: User): Result<User> {
         users.add(user)
         return Result.success(user)
     }
