@@ -27,7 +27,11 @@ class MessageController(
 
     @GetMapping("/sent")
     fun sent(user: User): ResponseEntity<SentMessagesDto> {
-        TODO()
+        return messageService.getSentMessages(user).map {
+            MessageDto(id = it.id, from = user.nickname, to = it.to.nickname)
+        }.let {
+            ResponseEntity.ok(SentMessagesDto(user.nickname, it))
+        }
     }
 
     @GetMapping("/received")

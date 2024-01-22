@@ -1,8 +1,17 @@
 package org.jaramo.vissage.adapter.api
 
+import org.hamcrest.Matchers.hasSize
 import org.jaramo.vissage.commons.testing.SpringContextTest
+import org.jaramo.vissage.domain.service.MessageRepository
+import org.jaramo.vissage.domain.service.UserRepository
+import org.jaramo.vissage.fixtures.Users.Alice
+import org.jaramo.vissage.fixtures.Users.Bob
+import org.jaramo.vissage.fixtures.Users.Carol
+import org.jaramo.vissage.fixtures.message
 import org.jaramo.vissage.infrastructure.UserArgumentResolver.Companion.USER_ID_HEADER
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +23,8 @@ import java.util.UUID
 @SpringContextTest
 class MessageControllerTest @Autowired constructor(
     private val mockMvc: MockMvc,
+    private val userRepository: UserRepository,
+    private val messageRepository: MessageRepository,
 ) {
 
     @Nested
@@ -54,4 +65,57 @@ class MessageControllerTest @Autowired constructor(
             }
         }
     }
+
+
+
+    @Nested
+    inner class MessagesSentByUser {
+
+        @BeforeEach
+        fun setUp() {
+            userRepository.save(Alice)
+            userRepository.save(Bob)
+            userRepository.save(Carol)
+        }
+
+        @Test
+        fun `should return 200 with empty list`() {
+            mockMvc.get("/message/sent") {
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.messages") {
+                        isArray()
+                        isEmpty()
+                    }
+                }
+            }
+        }
+
+        @Test
+        fun `should return a list with 2 messages`() {
+            messageRepository.save(message(from = Alice, to = Bob, "Hi Bob!"))
+            messageRepository.save(message(from = Alice, to = Carol, "Hi Carol!"))
+
+            mockMvc.get("/message/sent") {
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.messages") {
+                        isArray()
+                        value(hasSize<Any>(2))
+                    }
+                }
+            }
+        }
+    }
+
 }

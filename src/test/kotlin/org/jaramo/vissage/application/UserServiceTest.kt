@@ -9,10 +9,12 @@ import org.jaramo.vissage.domain.model.ApplicationError.UserPersistError
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.service.UserRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.stubbing
 import java.util.UUID
 
@@ -20,6 +22,11 @@ class UserServiceTest {
 
     private val userRepository: UserRepository = mock()
     private val service = UserService(userRepository)
+
+    @BeforeEach
+    fun setUp() {
+        reset(userRepository)
+    }
 
     @Test
     fun `should return error when nickname already exists`() {
