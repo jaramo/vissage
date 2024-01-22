@@ -1,10 +1,10 @@
 package org.jaramo.vissage.adapter.persistence
 
+import org.jaramo.vissage.common.Logging.getLoggerForClass
 import org.jaramo.vissage.domain.model.ApplicationError.UserPersistError
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.service.UserRepository
-import org.jaramo.vissage.infrastructure.Logging.getLoggerForClass
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table

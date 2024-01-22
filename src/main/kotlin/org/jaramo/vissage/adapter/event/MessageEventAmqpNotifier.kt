@@ -1,7 +1,7 @@
 package org.jaramo.vissage.adapter.event
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.jaramo.vissage.adapter.logging.Logging.getLoggerForClass
+import org.jaramo.vissage.common.Logging.getLoggerForClass
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.service.MessageEventNotifier
 import org.springframework.amqp.core.AmqpTemplate

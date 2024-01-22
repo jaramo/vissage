@@ -12,15 +12,15 @@ import com.tngtech.archunit.library.Architectures.onionArchitecture
 object ArchitectureTest {
 
     private const val BASE_PACKAGE: String = "org.jaramo.vissage"
+    private const val ADAPTER_PACKAGE = "$BASE_PACKAGE.adapter"
 
     @ArchTest
     val architecture: ArchRule =
         onionArchitecture()
             .domainModels("$BASE_PACKAGE.domain.model..")
-            .domainServices("$BASE_PACKAGE.domain.service..") // adapter interfaces
-            .applicationServices("$BASE_PACKAGE.application..") // business logic
-            .adapter("api", "$BASE_PACKAGE.adapter.api..") // controllers and dto
-            .adapter("event", "$BASE_PACKAGE.adapter.event..") // kafka connectors
-            .adapter("persistence", "$BASE_PACKAGE.adapter.persistence..") // db connectors
-//            .adapter("configuration", "$BASE_PACKAGE.configuration..")
+            .domainServices("$BASE_PACKAGE.domain.service..")
+            .applicationServices("$BASE_PACKAGE.application..")
+            .adapter("api", "$ADAPTER_PACKAGE.api..")
+            .adapter("event", "$ADAPTER_PACKAGE.event..")
+            .adapter("persistence", "$ADAPTER_PACKAGE.persistence..")
 }

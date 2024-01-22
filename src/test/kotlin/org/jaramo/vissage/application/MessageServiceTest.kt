@@ -10,6 +10,7 @@ import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
 import org.jaramo.vissage.domain.service.MessageEventNotifier
 import org.jaramo.vissage.domain.service.MessageRepository
+import org.jaramo.vissage.domain.service.MessageService
 import org.jaramo.vissage.domain.service.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

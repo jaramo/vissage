@@ -1,13 +1,11 @@
-package org.jaramo.vissage.application
+package org.jaramo.vissage.domain.service
 
+import org.jaramo.vissage.common.Logging.getLoggerForClass
 import org.jaramo.vissage.domain.model.ApplicationError.ExceptionError
 import org.jaramo.vissage.domain.model.ApplicationError.ReceiverNotValidError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
-import org.jaramo.vissage.domain.service.MessageEventNotifier
-import org.jaramo.vissage.domain.service.MessageRepository
-import org.jaramo.vissage.domain.service.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -20,6 +18,8 @@ class MessageService(
     private val userRepository: UserRepository,
     private val notifier: MessageEventNotifier,
 ) {
+
+    private val log = getLoggerForClass()
 
     @Transactional
     fun sendMessage(from: User, to: UUID, content: String): Result<Message> {
@@ -41,6 +41,8 @@ class MessageService(
             }
         }.onSuccess { message ->
             notifier.messageSent(message)
+        }.onFailure { error ->
+            log.error("Error sending message", error)
         }
     }
 

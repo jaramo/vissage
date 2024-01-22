@@ -1,10 +1,9 @@
-package org.jaramo.vissage.application
+package org.jaramo.vissage.domain.service
 
+import org.jaramo.vissage.common.Logging.getLoggerForClass
 import org.jaramo.vissage.domain.model.ApplicationError.UserAlreadyExistsError
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
-import org.jaramo.vissage.domain.service.UserRepository
-import org.jaramo.vissage.infrastructure.Logging.getLoggerForClass
 import org.springframework.stereotype.Service
 import java.util.UUID
 

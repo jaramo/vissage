@@ -3,9 +3,9 @@ package org.jaramo.vissage.adapter.api
 import jakarta.validation.Valid
 import org.jaramo.vissage.adapter.api.dto.SendMessageRequestDto
 import org.jaramo.vissage.adapter.api.dto.toDto
-import org.jaramo.vissage.application.MessageService
+import org.jaramo.vissage.application.toResponse
 import org.jaramo.vissage.domain.model.User
-import org.jaramo.vissage.infrastructure.toResponse
+import org.jaramo.vissage.domain.service.MessageService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,8 +30,8 @@ class MessageController(
                 ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(message.toDto())
-            }.getOrElse { error ->
-                error.toResponse()
+            }.getOrElse {
+                it.toResponse()
             }
     }
 

@@ -1,8 +1,8 @@
-package org.jaramo.vissage.infrastructure
+package org.jaramo.vissage.application
 
+import org.jaramo.vissage.domain.model.MissingUserIdHeaderException
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
-import org.jaramo.vissage.domain.model.MissingUserIdHeaderException
 import org.jaramo.vissage.domain.service.UserRepository
 import org.springframework.core.MethodParameter
 import org.springframework.web.bind.support.WebDataBinderFactory

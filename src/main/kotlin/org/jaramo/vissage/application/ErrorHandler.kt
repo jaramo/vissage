@@ -1,4 +1,4 @@
-package org.jaramo.vissage.infrastructure
+package org.jaramo.vissage.application
 
 import org.jaramo.vissage.domain.model.ApplicationError
 import org.jaramo.vissage.domain.model.ApplicationError.ReceiverNotValidError
@@ -44,10 +44,7 @@ fun Throwable.toResponse(): ResponseEntity<ErrorDto> =
 
 fun ApplicationError.toResponse(): ResponseEntity<ErrorDto> =
     when (this) {
-        is UserAlreadyExistsError,
-        is ReceiverNotValidError,
-        -> HttpStatus.BAD_REQUEST
-
+        is UserAlreadyExistsError, is ReceiverNotValidError -> HttpStatus.BAD_REQUEST
         else -> throw this
     }.let { status ->
         ResponseEntity.status(status).body(ErrorDto(this.error))

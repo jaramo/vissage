@@ -1,10 +1,10 @@
 package org.jaramo.vissage.adapter.persistence
 
+import org.jaramo.vissage.common.Logging.getLoggerForClass
 import org.jaramo.vissage.domain.model.ApplicationError.MessagePersistError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
-import org.jaramo.vissage.infrastructure.Logging.getLoggerForClass
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
 import org.springframework.data.jdbc.core.mapping.AggregateReference

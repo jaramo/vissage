@@ -5,12 +5,13 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import org.jaramo.vissage.application.UserArgumentResolver
+import org.jaramo.vissage.application.UserArgumentResolver.Companion.USER_ID_HEADER
 import org.jaramo.vissage.domain.model.MissingUserIdHeaderException
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.model.UserNotFoundException
 import org.jaramo.vissage.domain.service.UserRepository
-import org.jaramo.vissage.infrastructure.UserArgumentResolver.Companion.USER_ID_HEADER
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn

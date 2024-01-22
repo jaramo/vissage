@@ -3,12 +3,12 @@ package org.jaramo.vissage.application
 import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
-import org.jaramo.vissage.domain.model.ApplicationError
 import org.jaramo.vissage.domain.model.ApplicationError.UserAlreadyExistsError
 import org.jaramo.vissage.domain.model.ApplicationError.UserPersistError
 import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.service.UserRepository
+import org.jaramo.vissage.domain.service.UserService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

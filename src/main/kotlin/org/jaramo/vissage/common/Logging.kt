@@ -1,4 +1,4 @@
-package org.jaramo.vissage.infrastructure
+package org.jaramo.vissage.common
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -6,8 +6,6 @@ import kotlin.reflect.KClass
 
 object Logging {
     fun getLogger(kClass: KClass<*>): Logger = LoggerFactory.getLogger(kClass.java)
-
-//    inline fun <reified T : Any> getLogger(): Logger = getLogger(T::class)
 
     /**
      * Returns a logger for the class T.

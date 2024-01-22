@@ -1,7 +1,5 @@
-package org.jaramo.vissage.adapter.persistence
+package org.jaramo.vissage.commons.testing
 
-import org.jaramo.vissage.commons.testing.ClearableStub
-import org.jaramo.vissage.domain.model.Nickname
 import org.jaramo.vissage.domain.model.User
 import org.jaramo.vissage.domain.service.UserRepository
 import java.util.UUID

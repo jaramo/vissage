@@ -3,8 +3,8 @@ package org.jaramo.vissage.adapter.api
 import jakarta.validation.Valid
 import org.jaramo.vissage.adapter.api.dto.CreateUserRequestDto
 import org.jaramo.vissage.adapter.api.dto.toDto
-import org.jaramo.vissage.application.UserService
-import org.jaramo.vissage.infrastructure.toResponse
+import org.jaramo.vissage.application.toResponse
+import org.jaramo.vissage.domain.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

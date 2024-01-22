@@ -4,6 +4,7 @@ import org.hamcrest.Matchers.emptyArray
 import org.hamcrest.Matchers.emptyString
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
+import org.jaramo.vissage.application.UserArgumentResolver.Companion.USER_ID_HEADER
 import org.jaramo.vissage.commons.testing.SpringContextTest
 import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
@@ -11,7 +12,6 @@ import org.jaramo.vissage.fixtures.Users.Alice
 import org.jaramo.vissage.fixtures.Users.Bob
 import org.jaramo.vissage.fixtures.Users.Carol
 import org.jaramo.vissage.fixtures.message
-import org.jaramo.vissage.infrastructure.UserArgumentResolver.Companion.USER_ID_HEADER
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
