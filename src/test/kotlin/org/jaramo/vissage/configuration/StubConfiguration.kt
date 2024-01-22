@@ -1,6 +1,8 @@
 package org.jaramo.vissage.configuration
 
+import org.jaramo.vissage.adapter.persistence.MessageRepositoryStub
 import org.jaramo.vissage.adapter.persistence.UserRepositoryStub
+import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -14,4 +16,7 @@ class StubConfiguration {
     @Primary
     fun userRepository(): UserRepository = UserRepositoryStub()
 
+    @Bean
+    @Primary
+    fun messageRepository(): MessageRepository = MessageRepositoryStub()
 }

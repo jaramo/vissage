@@ -1,8 +1,9 @@
 package org.jaramo.vissage.adapter.persistence
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import org.jaramo.vissage.domain.model.ApplicationError.MessagePersistError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.service.MessageRepository
+import org.jaramo.vissage.infrastructure.Logging.getLoggerForClass
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
 import org.springframework.data.jdbc.core.mapping.AggregateReference
@@ -24,10 +25,14 @@ class MessagePostgreSQLRepository(
     private val repository: MessageSpringRepository,
 ) : MessageRepository {
 
+    private val log = getLoggerForClass()
+
     override fun save(message: Message): Result<Message> =
         repository.runCatching {
             this.save(message.toEntity())
-        }.map {
+        }.onFailure { error ->
+            log.error("Error persisting message entity", error)
+        }.mapCatching {
             Message(
                 id = it.id,
                 from = message.from,
@@ -35,6 +40,8 @@ class MessagePostgreSQLRepository(
                 content = message.content,
                 sentAt = message.sentAt
             )
+        }.recoverCatching { cause ->
+            throw MessagePersistError(message, cause)
         }
 
     override fun getSentBy(userId: UUID): List<Message> {
@@ -43,30 +50,26 @@ class MessagePostgreSQLRepository(
 
     private fun Message.toEntity(): MessageEntity =
         MessageEntity(
+            id = id,
             sender = AggregateReference.to(from.id),
             receiver = AggregateReference.to(to.id),
             content = content,
-            createdAt = LocalDateTime.now(),
-            metadata = Metadata(sentAt = sentAt)
+            sentAt = sentAt
         )
 }
 
 @Table("message")
 data class MessageEntity(
-    @Id private val id: UUID? = null,
+    @Id private val id: UUID,
     @Column("sender_id") val sender: AggregateReference<EntityUser, UUID>,
     @Column("receiver_id") val receiver: AggregateReference<EntityUser, UUID>,
     val content: String,
-    val createdAt: LocalDateTime,
-    val metadata: Metadata,
-) : Persistable<UUID> {
-    override fun getId(): UUID? = id
-    override fun isNew(): Boolean = id == null
-}
-
-@JsonInclude(JsonInclude.Include.ALWAYS)
-data class Metadata(
     val sentAt: LocalDateTime,
     val deliveredAt: LocalDateTime? = null,
     val readAt: LocalDateTime? = null,
-)
+
+    val createdAt: LocalDateTime? = null,
+) : Persistable<UUID> {
+    override fun getId(): UUID = id
+    override fun isNew(): Boolean = createdAt == null
+}
