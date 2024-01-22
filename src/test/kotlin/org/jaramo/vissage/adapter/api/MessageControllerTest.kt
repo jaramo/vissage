@@ -1,6 +1,9 @@
 package org.jaramo.vissage.adapter.api
 
+import org.hamcrest.Matchers.emptyArray
+import org.hamcrest.Matchers.emptyString
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.jaramo.vissage.commons.testing.SpringContextTest
 import org.jaramo.vissage.domain.service.MessageRepository
 import org.jaramo.vissage.domain.service.UserRepository
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import java.util.UUID
 
 @SpringContextTest
@@ -26,6 +30,13 @@ class MessageControllerTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val messageRepository: MessageRepository,
 ) {
+
+    @BeforeEach
+    fun setUp() {
+        userRepository.save(Alice)
+        userRepository.save(Bob)
+        userRepository.save(Carol)
+    }
 
     @Nested
     inner class Authentication {
@@ -68,13 +79,6 @@ class MessageControllerTest @Autowired constructor(
 
     @Nested
     inner class MessagesReceivedByUser {
-
-        @BeforeEach
-        fun setUp() {
-            userRepository.save(Alice)
-            userRepository.save(Bob)
-            userRepository.save(Carol)
-        }
 
         @Test
         fun `should return 200 with empty list`() {
@@ -126,12 +130,6 @@ class MessageControllerTest @Autowired constructor(
     @Nested
     inner class MessagesReceivedByUserFromParticularUser {
 
-        @BeforeEach
-        fun setUp() {
-            userRepository.save(Alice)
-            userRepository.save(Bob)
-            userRepository.save(Carol)
-        }
 
         @Test
         fun `should return 200 with empty list`() {
@@ -188,12 +186,7 @@ class MessageControllerTest @Autowired constructor(
     @Nested
     inner class MessagesSentByUser {
 
-        @BeforeEach
-        fun setUp() {
-            userRepository.save(Alice)
-            userRepository.save(Bob)
-            userRepository.save(Carol)
-        }
+
 
         @Test
         fun `should return 200 with empty list`() {
@@ -206,8 +199,7 @@ class MessageControllerTest @Autowired constructor(
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content {
                     jsonPath("$") {
-                        isArray()
-                        isEmpty()
+                        value<Array<Any>>(emptyArray())
                     }
                 }
             }
@@ -242,24 +234,20 @@ class MessageControllerTest @Autowired constructor(
         }
     }
 
-    /*
     @Nested
-    inner class SendMessageEntity {
+    inner class SendMessageToAnotherUser {
 
         @Test
         fun `should return 400 when sending message to yourself`() {
-
-            val user = userRepository.save(User(id = UUID.randomUUID(), Nickname("test1"))).getOrThrow()
-
             mockMvc.post("/message") {
                 headers {
-                    header(USER_ID_HEADER, user.id)
+                    header(USER_ID_HEADER, Alice.id)
                 }
                 contentType = MediaType.APPLICATION_JSON
                 content = """|
                     |{
-                    |   "to": "${user.id}",
-                    |   "message": "message to myself"
+                    |   "to": "${Alice.id}",
+                    |   "message": "Hi Bob!"
                     |}
                     |""".trimMargin()
             }.andExpect {
@@ -267,12 +255,35 @@ class MessageControllerTest @Autowired constructor(
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content {
                     jsonPath("$.error") {
-                        value<Array<String>>(arrayWithSize(2))
+                        value(not(emptyString()))
                     }
                 }
             }
         }
-    }
-    */
 
+        @Test
+        fun `should return 201 when sending message to another user`() {
+            mockMvc.post("/message") {
+                headers {
+                    header(USER_ID_HEADER, Alice.id)
+                }
+                contentType = MediaType.APPLICATION_JSON
+                content = """|
+                    |{
+                    |   "to": "${Bob.id}",
+                    |   "message": "Hi Bob!"
+                    |}
+                    |""".trimMargin()
+            }.andExpect {
+                status { isCreated() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.id") { value(not(emptyString())) }
+                    jsonPath("$.from.nickname") { value(Alice.nickname.value()) }
+                    jsonPath("$.to.nickname") { value(Bob.nickname.value()) }
+                    jsonPath("$.status") { value("SENT") }
+                }
+            }
+        }
+    }
 }

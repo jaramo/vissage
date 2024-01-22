@@ -7,7 +7,7 @@ sealed class ApplicationError(val error: String, override val cause: Throwable? 
         ApplicationError(error = "User '${nickname}' already exists")
 
     data class ReceiverNotValidError(val sender: UUID, val receiver: UUID) :
-        ApplicationError(error = "Impossible to send message from User['$sender'] to User['$receiver']")
+        ApplicationError(error = "Not possible to send message from User['$sender'] to User['$receiver']")
 
     data class UserPersistError(val user: User, override val cause: Throwable) :
         ApplicationError("Unable to persist user $user", cause)

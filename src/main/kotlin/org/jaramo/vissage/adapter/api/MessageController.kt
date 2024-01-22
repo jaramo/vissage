@@ -1,7 +1,7 @@
 package org.jaramo.vissage.adapter.api
 
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
+import org.jaramo.vissage.adapter.api.dto.SendMessageRequestDto
 import org.jaramo.vissage.adapter.api.dto.toDto
 import org.jaramo.vissage.application.MessageService
 import org.jaramo.vissage.domain.model.User
@@ -24,7 +24,15 @@ class MessageController(
 
     @PostMapping
     fun send(user: User, @Valid @RequestBody request: SendMessageRequestDto): ResponseEntity<out Any> {
-        TODO()
+        return messageService
+            .sendMessage(from = user, to = request.to, content = request.message)
+            .mapCatching { message ->
+                ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(message.toDto())
+            }.getOrElse { error ->
+                error.toResponse()
+            }
     }
 
     @GetMapping("/sent")
@@ -63,8 +71,3 @@ class MessageController(
             }
     }
 }
-
-data class SendMessageRequestDto(
-    val to: UUID,
-    @get:NotBlank val message: String,
-)
