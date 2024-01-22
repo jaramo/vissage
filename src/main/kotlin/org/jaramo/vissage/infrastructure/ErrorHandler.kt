@@ -3,6 +3,7 @@ package org.jaramo.vissage.infrastructure
 import org.jaramo.vissage.domain.model.ApplicationError
 import org.jaramo.vissage.domain.model.ApplicationError.ReceiverNotValidError
 import org.jaramo.vissage.domain.model.ApplicationError.UserAlreadyExistsError
+import org.jaramo.vissage.domain.model.MissingUserIdHeaderException
 import org.jaramo.vissage.domain.model.UserNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,8 +25,8 @@ class ErrorHandler {
         return ResponseEntity.badRequest().body(m)
     }
 
-    @ExceptionHandler(MissingHeaderException::class)
-    fun handleMissingHeaderException(error: MissingHeaderException): ResponseEntity<out Any> {
+    @ExceptionHandler(MissingUserIdHeaderException::class)
+    fun handleMissingHeaderException(error: MissingUserIdHeaderException): ResponseEntity<out Any> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDto(error.message!!))
     }
 
