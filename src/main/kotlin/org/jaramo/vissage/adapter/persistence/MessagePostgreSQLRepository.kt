@@ -3,6 +3,7 @@ package org.jaramo.vissage.adapter.persistence
 import org.jaramo.vissage.domain.model.ApplicationError.MessagePersistError
 import org.jaramo.vissage.domain.model.Message
 import org.jaramo.vissage.domain.service.MessageRepository
+import org.jaramo.vissage.domain.service.UserRepository
 import org.jaramo.vissage.infrastructure.Logging.getLoggerForClass
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
@@ -17,18 +18,24 @@ import java.util.UUID
 
 interface MessageSpringRepository : CrudRepository<MessageEntity, UUID>,
     PagingAndSortingRepository<MessageEntity, UUID> {
-
+        fun findAllBySenderOrderBySentAtDesc(id: AggregateReference<EntityUser, UUID>): Iterable<MessageEntity>
+        fun findAllByReceiverOrderBySentAtDesc(id: AggregateReference<EntityUser, UUID>): Iterable<MessageEntity>
+        fun findAllBySenderAndReceiverOrderBySentAtDesc(
+            sender: AggregateReference<EntityUser, UUID>,
+            receiver: AggregateReference<EntityUser, UUID>,
+        ): Iterable<MessageEntity>
 }
 
 @Repository
 class MessagePostgreSQLRepository(
-    private val repository: MessageSpringRepository,
+    private val springRepository: MessageSpringRepository,
+    private val userRepository: UserRepository,
 ) : MessageRepository {
 
     private val log = getLoggerForClass()
 
     override fun save(message: Message): Result<Message> =
-        repository.runCatching {
+        springRepository.runCatching {
             this.save(message.toEntity())
         }.onFailure { error ->
             log.error("Error persisting message entity", error)
@@ -45,7 +52,24 @@ class MessagePostgreSQLRepository(
         }
 
     override fun getSentBy(userId: UUID): List<Message> {
-        TODO("Not yet implemented")
+        return springRepository
+                .findAllBySenderOrderBySentAtDesc(AggregateReference.to(userId))
+                .map { it.toModel() }
+    }
+
+    override fun getReceivedBy(userId: UUID): List<Message> {
+        return springRepository
+            .findAllByReceiverOrderBySentAtDesc(AggregateReference.to(userId))
+            .map { it.toModel() }
+    }
+
+    override fun getReceived(from: UUID, to: UUID): List<Message> {
+        return springRepository
+            .findAllBySenderAndReceiverOrderBySentAtDesc(
+                sender = AggregateReference.to(from),
+                receiver = AggregateReference.to(to)
+            )
+            .map { it.toModel() }
     }
 
     private fun Message.toEntity(): MessageEntity =
@@ -53,6 +77,15 @@ class MessagePostgreSQLRepository(
             id = id,
             sender = AggregateReference.to(from.id),
             receiver = AggregateReference.to(to.id),
+            content = content,
+            sentAt = sentAt
+        )
+
+    private fun MessageEntity.toModel(): Message =
+        Message(
+            id = id,
+            from = userRepository.findUserById(sender.id!!)!!,
+            to = userRepository.findUserById(receiver.id!!)!!,
             content = content,
             sentAt = sentAt
         )
