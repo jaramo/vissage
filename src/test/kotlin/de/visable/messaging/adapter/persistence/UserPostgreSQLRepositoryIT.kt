@@ -1,11 +1,10 @@
 package de.visable.messaging.adapter.persistence
 
-import de.visable.messaging.adapter.persistence.UserPostgreSQLRepository
+import de.visable.messaging.common.testing.IntegrationTestContext
+import de.visable.messaging.fixtures.Users.Alice
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
-import de.visable.messaging.common.testing.IntegrationTestContext
-import de.visable.messaging.fixtures.Users.Alice
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,16 +1,14 @@
 package de.visable.messaging.adapter.persistence
 
-import de.visable.messaging.adapter.persistence.MessagePostgreSQLRepository
-import de.visable.messaging.adapter.persistence.UserPostgreSQLRepository
-import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.result.shouldBeSuccess
-import io.kotest.matchers.shouldBe
 import de.visable.messaging.common.testing.IntegrationTestContext
 import de.visable.messaging.domain.model.Message
 import de.visable.messaging.fixtures.Users
 import de.visable.messaging.fixtures.Users.Alice
 import de.visable.messaging.fixtures.Users.Bob
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.result.shouldBeSuccess
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

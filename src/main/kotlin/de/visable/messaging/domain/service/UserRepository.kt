@@ -1,6 +1,5 @@
 package de.visable.messaging.domain.service
 
-import de.visable.messaging.domain.model.Nickname
 import de.visable.messaging.domain.model.User
 import java.util.UUID
 
