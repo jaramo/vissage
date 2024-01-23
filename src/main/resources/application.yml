@@ -10,11 +10,6 @@ spring:
     password: root
     url: jdbc:postgresql://localhost:5432/messaging
     driver-class-name: org.postgresql.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        show_sql: true
   liquibase:
     enabled: true
   rabbitmq:
@@ -26,5 +21,3 @@ spring:
 logging.level:
   org.springframework:
     data: INFO
-    jdbc.core.JdbcTemplate: DEBUG
-

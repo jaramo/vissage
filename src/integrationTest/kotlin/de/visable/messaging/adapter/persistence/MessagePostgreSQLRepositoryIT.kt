@@ -1,10 +1,10 @@
 package de.visable.messaging.adapter.persistence
 
-import de.visable.messaging.common.testing.IntegrationTestContext
+import de.visable.messaging.configuration.IntegrationTestContext
 import de.visable.messaging.domain.model.Message
-import de.visable.messaging.fixtures.Users
 import de.visable.messaging.fixtures.Users.Alice
 import de.visable.messaging.fixtures.Users.Bob
+import de.visable.messaging.fixtures.Users.Carol
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.result.shouldBeSuccess
@@ -28,7 +28,7 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
     fun setUp() {
         userRepository.save(Alice)
         userRepository.save(Bob)
-        userRepository.save(Users.Carol)
+        userRepository.save(Carol)
     }
 
     @AfterEach

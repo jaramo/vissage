@@ -6,6 +6,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.9.21'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.21'
     id 'com.adarshr.test-logger' version '4.0.0'
+    id 'java'
+    id 'jvm-test-suite'
 }
 
 group = 'de.visable'
@@ -71,4 +73,29 @@ testlogger {
     showSkipped = true
     showFailed = true
     showOnlySlow = false
+}
+
+testing {
+    suites {
+        integrationTest(JvmTestSuite) {
+            testType = TestSuiteType.INTEGRATION_TEST
+            dependencies {
+                implementation project()
+            }
+            sources {
+                kotlin {
+                    compileClasspath += sourceSets.test.compileClasspath + sourceSets.test.output
+                    runtimeClasspath += sourceSets.test.output
+                }
+            }
+        }
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+}
+
+tasks.named('check') {
+    dependsOn(testing.suites.integrationTest)
 }

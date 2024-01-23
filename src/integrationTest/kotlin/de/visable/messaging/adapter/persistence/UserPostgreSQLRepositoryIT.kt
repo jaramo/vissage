@@ -1,6 +1,6 @@
 package de.visable.messaging.adapter.persistence
 
-import de.visable.messaging.common.testing.IntegrationTestContext
+import de.visable.messaging.configuration.IntegrationTestContext
 import de.visable.messaging.fixtures.Users.Alice
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.result.shouldBeSuccess

@@ -1,7 +1,5 @@
-package de.visable.messaging.common.testing
+package de.visable.messaging.configuration
 
-import de.visable.messaging.configuration.TestContainersConfiguration
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -15,5 +13,4 @@ import org.springframework.test.context.ActiveProfiles
 )
 @AutoConfigureMockMvc
 @Target(AnnotationTarget.CLASS)
-@ExtendWith(SpringContextTestCallbacks::class)
 annotation class IntegrationTestContext
