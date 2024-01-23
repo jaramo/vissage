@@ -19,3 +19,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: rabbit
       RABBITMQ_DEFAULT_PASS: rabbit
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
+      - "./definitions.json:/etc/rabbitmq/definitions.json:ro"
