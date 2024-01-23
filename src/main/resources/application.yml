@@ -1,6 +1,6 @@
 spring:
   application:
-    name: "Visable Message"
+    name: "Visable Messaging Service"
   jackson:
     time-zone: Europe/Berlin
     serialization:

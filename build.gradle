@@ -8,7 +8,7 @@ plugins {
     id 'com.adarshr.test-logger' version '4.0.0'
 }
 
-group = 'org.jaramo'
+group = 'de.visable'
 version = '0.0.1-SNAPSHOT'
 
 java {
