@@ -6,8 +6,11 @@ import de.visable.messaging.fixtures.Users.Alice
 import de.visable.messaging.fixtures.Users.Bob
 import de.visable.messaging.fixtures.Users.Carol
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.result.shouldBeSuccess
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -56,15 +59,9 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
             saved shouldBe message
         }
 
-        messageRepository.getSentBy(Alice.id).also {
-            println("""|
-                |
-                |
-                | from DB: $it
-                |
-                |
-            """.trimMargin())
-            it.shouldContainAll(message)
+        messageRepository.getSentBy(Alice.id).should {
+            it shouldHaveSize 1
+            it shouldContain message
         }
         messageRepository.getReceivedBy(Bob.id).shouldContainAll(message)
         messageRepository.getReceived(from = Alice.id, to = Bob.id).shouldContainAll(message)
