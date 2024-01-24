@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @IntegrationTestContext
@@ -44,7 +45,7 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
             from = Alice,
             to = Bob,
             content = "Hi Bob!",
-            sentAt = LocalDateTime.now()
+            sentAt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         )
 
         messageRepository.getSentBy(Alice.id).shouldBeEmpty()
