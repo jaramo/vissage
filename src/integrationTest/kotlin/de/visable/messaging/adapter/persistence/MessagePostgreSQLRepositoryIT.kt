@@ -60,6 +60,15 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
         }
 
         messageRepository.getSentBy(Alice.id).should {
+            println("""|
+                |
+                |
+                | from DB: $it
+                | 
+                | message: $message
+                |
+                |
+            """.trimMargin())
             it shouldHaveSize 1
             it shouldContain message
         }
