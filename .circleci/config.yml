@@ -1,42 +1,11 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:java:.,tool:gradle:
 version: 2.1
-jobs:
-  test-java:
-    docker:
-      - image: cimg/openjdk:17.0
-    steps:
-      - checkout
-      - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
-      - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-      - run:
-          command: ./gradlew check
-      - store_test_results:
-          path: build/test-results
-      - save_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-          paths:
-            - ~/.gradle/caches
-      - store_artifacts:
-          path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+orbs:
+  gradle: circleci/gradle@3.0.0
+  tcc: atomicjar/testcontainers-cloud-orb@0.1.0
 workflows:
   build-and-test:
     jobs:
-      - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - gradle/test:
+          executor: jdk17
+          pre-steps:
+            - tcc/setup
