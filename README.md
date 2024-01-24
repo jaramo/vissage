@@ -1,4 +1,5 @@
 # Messaging Application
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/WzuQdvtjPKoxEmHy9QgEXM/Juy1xCVrqjr5qjZ5vUcMhE/tree/main.svg?style=svg&circle-token=d302ab8d3a51488f8e339fdb6104539e9346ad0e)](https://dl.circleci.com/status-badge/redirect/circleci/WzuQdvtjPKoxEmHy9QgEXM/Juy1xCVrqjr5qjZ5vUcMhE/tree/main)
 
 ## How to run
 
