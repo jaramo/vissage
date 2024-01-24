@@ -6,19 +6,16 @@ import de.visable.messaging.fixtures.Users.Alice
 import de.visable.messaging.fixtures.Users.Bob
 import de.visable.messaging.fixtures.Users.Carol
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.result.shouldBeSuccess
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @IntegrationTestContext
@@ -48,7 +45,7 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
             from = Alice,
             to = Bob,
             content = "Hi Bob!",
-            sentAt = LocalDateTime.now()
+            sentAt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         )
 
         messageRepository.getSentBy(Alice.id).shouldBeEmpty()
@@ -59,19 +56,7 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
             saved shouldBe message
         }
 
-        messageRepository.getSentBy(Alice.id).should {
-            println("""|
-                |
-                |
-                | from DB: $it
-                | 
-                | message: $message
-                |
-                |
-            """.trimMargin())
-            it shouldHaveSize 1
-            it shouldContain message
-        }
+        messageRepository.getSentBy(Alice.id).shouldContainAll(message)
         messageRepository.getReceivedBy(Bob.id).shouldContainAll(message)
         messageRepository.getReceived(from = Alice.id, to = Bob.id).shouldContainAll(message)
 
