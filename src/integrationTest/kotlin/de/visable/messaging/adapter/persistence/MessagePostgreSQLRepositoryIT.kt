@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDateTime
@@ -55,7 +56,16 @@ class MessagePostgreSQLRepositoryIT @Autowired constructor(
             saved shouldBe message
         }
 
-        messageRepository.getSentBy(Alice.id).shouldContainAll(message)
+        messageRepository.getSentBy(Alice.id).also {
+            println("""|
+                |
+                |
+                | from DB: $it
+                |
+                |
+            """.trimMargin())
+            it.shouldContainAll(message)
+        }
         messageRepository.getReceivedBy(Bob.id).shouldContainAll(message)
         messageRepository.getReceived(from = Alice.id, to = Bob.id).shouldContainAll(message)
 
