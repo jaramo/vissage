@@ -94,7 +94,6 @@ testing {
 
 integrationTest {
     testlogger {
-        showStandardStreams true
         slowThreshold = 2000
     }
 }
