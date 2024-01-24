@@ -9,5 +9,6 @@ workflows:
           executor:
             name: gradle/default
             tag: "17.0"
+          test_command: check
           pre-steps:
             - tcc/setup
